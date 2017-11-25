@@ -1,3 +1,9 @@
+/* 
+ *  Test calling Java function from Scala 
+ */
+
+import com.sun.jna._
+
 class myTestClass {
 
   def Hello(): Unit = {
