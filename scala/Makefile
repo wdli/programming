@@ -1,5 +1,5 @@
 all:
-	scalac mytest1.scala
+	scalac -d ${CLASSPATH} *.scala
 
 clean:
 	rm *.class *.*~
