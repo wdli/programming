@@ -5,6 +5,8 @@
  *  - which java
  *  - sudo apt-get install default-jdk
  */
+package com.example.hello;
+    
 public class hello {
 
     //
@@ -23,8 +25,8 @@ public class hello {
     //
     // main
     //
-    public static void main (String [] args ){
-	hello h = new hello("David");
-    }
+    // public static void main (String [] args ){
+    // 	hello h = new hello("David");
+    // }
     
 }

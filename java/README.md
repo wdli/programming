@@ -1,7 +1,12 @@
+To set the env:
+
+  export CLASSPATH=/home/david/workspace/javaclass
+   
+
 To compile:
 
-javac hello.java
+  javac -d $CLASSPATH hello.java
 
 To run:
 
-java hello
+  java hello
