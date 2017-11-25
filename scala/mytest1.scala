@@ -2,7 +2,7 @@
  *  Test calling Java function from Scala 
  */
 
-import com.sun.jna._
+// import com.sun.jna._
 
 class myTestClass {
 
