@@ -1,9 +1,18 @@
 /* 
  *  Test calling Java function from Scala 
+ * 
+ *  Set CLASSPATH
+ *  
+ *  Use make to compile
+ *  see Makefile for details how to compile
+ * 
  */
 
 import com.example.hello._
 
+/*
+ *  test class
+ */
 class myTestClass {
 
   def Hello(): Unit = {
@@ -13,6 +22,9 @@ class myTestClass {
 }
 
 
+/*
+ * main
+ */
 object testMyClass {
   def main (args: Array[String]): Unit = {
     // call my own scala class
