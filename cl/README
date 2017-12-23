@@ -1,2 +1,15 @@
-Cumulus Linux Testing Ground
+Cumulus Linux Testing Ground:
+
+Make sure the Virtualization Technology is enabled in BIOS under "security" tab
+
+Commonly used vagrant commands
+
+- vagrant box add <box name> --provider=libvirt
+- vagrant init <box name>
+- vagrant up --provider=libvirt
+- vagrant status
+- vagrant ssh <box name in vagrant status display>
+- vagrant destroy -f <box name in status>
+
+
 Ref: https://docs.cumulusnetworks.com/display/VX/Vagrant+and+Libvirt+with+KVM+or+QEMU
