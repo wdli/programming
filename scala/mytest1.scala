@@ -32,7 +32,7 @@ object testMyClass {
     my.Hello()
 
     // call my Java class
-    val myjava = new hello(" Davids Java!")
+    val myjava = new hello("veVdmyRFOVbkFBzJiVhgJw==")
 
   }
 

@@ -10,7 +10,7 @@
  *
  */
 package com.example.hello;
-    
+
 public class hello {
 
     //
@@ -24,6 +24,10 @@ public class hello {
     public hello(String msg) {
 	message = msg;
 	System.out.println("Hello: " + message);
+
+	// Test String to bytes conversion
+	byte [] buf = message.getBytes();
+	System.out.println("Length of the byte buffer: " + buf.length);
     }
 
     
