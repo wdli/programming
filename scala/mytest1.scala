@@ -51,11 +51,13 @@ object testMyClass {
    */
   def retrieveFromFile(fn : String) : String = {
 
-    for ( l <- Source.fromFile(fn).getLines ) {
+    val bufferedSource = Source.fromFile(fn)
+    for ( l <- bufferedSource.getLines ) {
       println(" - " + l)
-      
-    }
 
+    }
+    bufferedSource.close
+    null
   }
 
   /*
