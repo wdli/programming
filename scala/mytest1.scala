@@ -10,6 +10,7 @@
 
 import com.example.hello._
 import java.io._
+import scala.io.Source
 
 /*
  *  test class
@@ -31,7 +32,9 @@ class myTestClass {
 object testMyClass {
 
 
-
+  /*
+   * updateToFile
+   */
   def updateToFile ( fn : String, key : String, encFile : String ) : Unit = {
     
     val w = new FileWriter(new File(fn), true)
@@ -43,8 +46,21 @@ object testMyClass {
   }
 
 
+  /*
+   * retrieveFromFile
+   */
+  def retrieveFromFile(fn : String) : String = {
 
+    for ( l <- Source.fromFile(fn).getLines ) {
+      println(" - " + l)
+      
+    }
 
+  }
+
+  /*
+   * main
+   */
   def main (args: Array[String]): Unit = {
 
     // call my own scala class
@@ -60,6 +76,10 @@ object testMyClass {
 
     println("Update the file")
     updateToFile("file1", "key2", "encFile2")
+
+    // Read from the file
+    println("Read the file")
+    retrieveFromFile("file1")
 
   }
 
