@@ -1,0 +1,29 @@
+# Docker cmds
+
+docker rmi -f $(docker images -q)
+docker build -t wdli-flask .
+docker run -p 5001:5000 wdli-flask
+sudo docker login --username=wdlidocker
+sudo docker tag wdli-flask:latest wdlidocker/wdli-flask:2
+sudo docker push docker.io/wdlidocker/wdli-flask:2
+
+
+# k8 cmds
+
+minikube start/stop
+
+kubectl get cs
+kubectl get pods
+
+kubectl run wdli-flask --image=docker.io/wdlidocker/wdli-flask:2
+kubectl port-forward wdli-flask-b87c554cf-vjknw 5001:5000
+
+
+kubectl delete deployments/wdli-flask
+kubectl delete pods/wdli-flask-3-xxxx
+
+
+# Install minikube
+
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
