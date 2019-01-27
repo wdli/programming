@@ -3,24 +3,13 @@ kind: Pod
 metadata:
   name: wdli-flask
 spec:
-  volumes:
-  - name: "wdli-flask-vol"
-    hostPath:
-      path: "/opt/k8"      
   containers:
   - image: docker.io/wdlidocker/wdli-flask:2
-    name: wdli-flask-docker-img
-    volumeMounts:
-        - mountPath: "/data"
-          name: "wdli-flask-vol"
-    livenessProbe:
-        httpGet:
-          path: /healthy
-          port: 8080
-        initialDelaySeconds: 5
-        timeoutSeconds: 1
-        periodSeconds: 10
-        failureThreshold: 3
+    name: wdli-flask
+    ports:
+      - containerPort: 5000
+        name: http
+        protocol: TCP
     resources:
         requests:
           cpu: "500m"
@@ -28,7 +17,3 @@ spec:
         limits:
           cpu: "1000m"
           memory: "256Mi"
-    ports:
-    - containerPort: 5000
-      name: http
-      protocol: TCP
