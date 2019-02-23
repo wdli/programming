@@ -8,6 +8,11 @@ sudo docker tag wdli-flask:latest wdlidocker/wdli-flask:2
 sudo docker push docker.io/wdlidocker/wdli-flask:2
 
 
+# Install minikube
+
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
+
 # k8 cmds
 
 minikube start/stop
@@ -27,7 +32,37 @@ kubectl delete pods/wdli-flask-3-xxxx
 
 kubectl exec -it wdli-flask bash
 
-# Install minikube
+# labels and annotations
 
-curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
-echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
+kubectl get pods --selector="env=test"
+kubectl get deployments --show-labels 
+kubectl delete deployments --all
+
+# Serivces
+
+kubectl run alpaca-prod --image=gcr.io/kuar-demo/kuard-amd64:1 --replicas=3 --port=3  --labels="ver=1,app=alpaca,env=prod"
+kubectl expose deployment alpaca-prod
+kubectl get services -o wide
+kubectl get services -o wide
+kubectl run --generator=run-pod/v1 bandicoot-prod --image=gcr.io/kuar-demo/kuard-amd64:2 --replicas=2 --port=8080  --labels="ver=2,app=bandicoot,env=prod"
+kubectl get endpoints 
+kubectl describe endpoints alpaca-prod --watch
+kubectl get pods -o wide --selector="app=alpaca, env=prod"
+
+# ReplicaSet
+
+kubectl apply -f 8-1-kuard-rs.yaml 
+kubectl describe rs kuard
+kubectl get po --show-labels 
+kubectl get pods -l app=kuard,version=2
+kubectl scale replicaset kuard --replicas=4
+kubectl get  pod --namespace=kube-system 
+kubectl delete rs kuard
+
+
+# DaemonSets
+
+kubectl apply -f 9-1-fluentd.yaml 
+kubectl describe daemonsets fluentd --namespace=kube-system 
+kubectl get pods -o wide # couldn't see the DaemonSets in minikube
+

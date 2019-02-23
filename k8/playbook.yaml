@@ -1,0 +1,14 @@
+#
+# Dummy playbook to trick vagrant to create automatically 
+# an Ansible inventory file in 
+# .vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory
+# 
+# Also matches the ansible.cfg file inventory 
+# 
+
+- hosts: all
+  user: vagrant
+  gather_facts: no
+  tasks:
+    - command: "uname -a"
+      
