@@ -21,7 +21,12 @@
 
   - name: Disable swap space
     shell: swapoff -a
-    
+
+  - name: Set up netfilter bridge
+    shell: "{{ item }}"
+    with_items: 
+       - modprobe br_netfilter
+       - echo '1' >> /proc/sys/net/bridge/bridge-nf-call-iptables
 
 
 
