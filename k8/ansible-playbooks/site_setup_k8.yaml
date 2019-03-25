@@ -1,0 +1,19 @@
+#
+# K8 setup main playbook
+# 
+
+- hosts: all
+  become: yes
+  vars_files:
+    - k8-vars.yaml
+  tasks:
+  - name: Add DNS entries to host file
+    blockinfile:
+      path: /etc/hosts
+      block: |
+        {{master_ip}} {{master_name}}
+        {{worker1_ip}} {{worker1_name}}
+        {{worker2_ip}} {{worker2_name}}
+
+
+

@@ -1,0 +1,14 @@
+#
+# common vars for all k8 nodes
+#
+
+master_ip: 192.168.10.20
+master_name: master
+
+
+worker1_ip: 192.168.10.21
+worker1_name: worker1
+
+
+worker2_ip: 192.168.10.22
+worker2_name: worker2
