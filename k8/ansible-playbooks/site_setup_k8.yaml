@@ -29,4 +29,12 @@
        - echo '1' >> /proc/sys/net/bridge/bridge-nf-call-iptables
 
 
-
+  - name: Install Docker runtime dependencies
+    yum:
+      name: "{{item}}"
+      state: latest
+    with_items:
+      - yum-utils
+      - device-mapper-persistent-data
+      - lvm2
+  
