@@ -37,4 +37,29 @@
       - yum-utils
       - device-mapper-persistent-data
       - lvm2
-  
+
+  - name: Add Docker repo
+    shell: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+    
+
+  - name: Install Docker runtime
+    yum:
+      name: docker-ce
+      state: latest
+
+  - name: Copy K8s repo file
+    copy:
+      src: kubernetes.repo
+      dest: /etc/yum.repos.d/
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: Install K8s components
+    yum:
+      name: "{{item}}"
+      state: latest
+    with_items:
+      - kubeadm
+      - kubectl
+      - kubelet
