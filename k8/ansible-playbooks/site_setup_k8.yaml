@@ -55,7 +55,7 @@
       group: root
       mode: 0644
 
-  - name: Install K8s components
+  - name: Install K8s components # May need to reboot after this step
     yum:
       name: "{{item}}"
       state: latest
@@ -63,3 +63,7 @@
       - kubeadm
       - kubectl
       - kubelet
+    notify: 
+      - Enable and start docker
+      - Enable and start kubelet
+  
