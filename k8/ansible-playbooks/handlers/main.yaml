@@ -11,3 +11,7 @@
     enabled: yes
     state: restarted
 
+- name: Reload daemon
+  shell: systemctl daemon-reload
+  
+

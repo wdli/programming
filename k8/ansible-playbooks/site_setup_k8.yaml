@@ -6,6 +6,23 @@
   become: yes
   vars_files:
     - k8-vars.yaml
+    
+  handlers:
+  - name: Enable and start docker
+    service:
+      name: docker
+      enabled: yes
+      state: restarted
+
+  - name: Enable and start kubelet
+    service:
+      name: kubelet
+      enabled: yes
+      state: restarted
+
+  - name: Reload daemon
+    shell: systemctl daemon-reload
+                
   tasks:
   - name: Add DNS entries to host file
     blockinfile:
@@ -65,5 +82,14 @@
       - kubelet
     notify: 
       - Enable and start docker
+    #   - Enable and start kubelet
+
+  - name: Cgroup update
+    lineinfile:
+      path: /usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf
+      regexp: ^cgroup-driver
+      line: cgroup-driver=cgroupfs
+      #line: cgroup-driver=systemd
+    notify:
+      - Reload daemon
       - Enable and start kubelet
-  
