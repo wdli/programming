@@ -95,3 +95,28 @@ This node has joined the cluster:
 
 Run 'kubectl get nodes' on the control-plane to see this node join the cluster.
 
+
+
+# New cluster w/ 2CPU and 2GM RAM
+
+kubeadm join 192.168.10.20:6443 --token dno9uv.bs038erat174pu24 \
+    --discovery-token-ca-cert-hash sha256:d45f6786e1eaf16bb8015940a4c9a010daf5779fb18ea63893e53c9304e67b4d
+
+
+
+# On the Ubuntu host:
+Download from master node /etc/kubernetes/admin.conf to the current directory and then run the kubeclt cmd:
+ kubectl --kubeconfig=./admin.conf  < cmds>
+
+# Install flannel
+ kubectl --kubeconfig=./admin.conf apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+
+# Now check the node status
+wdli@wdli-T470:k8 $ kubectl --kubeconfig=./admin.conf get no
+NAME      STATUS   ROLES    AGE     VERSION
+master    Ready    master   3d16h   v1.14.0
+worker1   Ready    <none>   3d16h   v1.14.0
+worker2   Ready    <none>   3d16h   v1.14.0
+
+
+# Done!
