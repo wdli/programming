@@ -1,3 +1,9 @@
+
+
+# 6/2 Note
+
+
+
 # Before this, first run ansible playbook to install all packages and configuration for the cluster
 
 # On the master node:
@@ -5,10 +11,6 @@
 ## To use a separate pod network different from the host network: 10.10.1.0/24
 sudo kubeadm init --apiserver-advertise-address=192.168.10.20 --pod-network-cidr=10.10.1.0/24
 
-
-## output from master node:
-
-[vagrant@master ~]$ sudo kubeadm init --apiserver-advertise-address=192.168.10.20 --pod-network-cidr=192.168.10.0/24
 
 ### Sample output:
 ....
@@ -26,8 +28,9 @@ Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
   https://kubernetes.io/docs/concepts/cluster-administration/addons/
 
 Then you can join any number of worker nodes by running the following on each as root:
-### Pay attention here 4/13:
-kubeadm join 192.168.10.20:6443 --token mcyhrv.oiihrqwxn8542kd5 \
+
+
+sample --> kubeadm join 192.168.10.20:6443 --token mcyhrv.oiihrqwxn8542kd5 \
     --discovery-token-ca-cert-hash sha256:4975cb739bfdb1c3f6d75f70b91357c7532f790e3c42531cf3303ac30c07b04e
 
 
@@ -39,18 +42,21 @@ Or make a copy of the current .kube/config file and create a new one with the co
 
 # Install CNI plugin
 
+
+In "ansible-playbook" dir, do 
+
+   kubectl apply -f calico.yaml
+
+
 ## Install Calico
 
-###Download:
+Follow: https://docs.projectcalico.org/v3.7/getting-started/kubernetes/installation/calico
 
-https://docs.projectcalico.org/v3.3/getting-started/kubernetes/installation/hosted/rbac-kdd.yaml
-https://docs.projectcalico.org/v3.3/getting-started/kubernetes/installation/hosted/kubernetes-datastore/calico-networking/1.7/calico.yaml
+### Modifiy calico.yaml to use pod network address in the kubeadm init
 
-###Modifiy calico.yaml to use pod network address in the kubeadm init
+### Apply the yaml files
 
-###Apply the yaml files:
-kubectl apply -f rbac-kdd.yaml
-kubectl apply -f calicoyaml
+kubectl apply -f calico.yaml
 
 
 ### kubectl get po --all-namespaces
@@ -76,3 +82,12 @@ This node has joined the cluster:
 
 Run 'kubectl get nodes' on the control-plane to see this node join the cluster.
 
+
+
+### Note if needed go to master node to recreate the token
+sudo kubeadm token create
+
+
+### install calicoctl POD
+
+Follow: https://docs.projectcalico.org/v3.7/getting-started/calicoctl/install
