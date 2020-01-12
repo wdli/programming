@@ -1,0 +1,5 @@
+#
+# Use an Ansible container to run Ansbile playbooks w/ share host volumne
+#
+
+docker run -it --rm -v "$(pwd)":/ansible -w /ansible wdlidocker/ansibledocker:1.0
