@@ -16,30 +16,35 @@ terraform {
   }
 }
 
-#
+####################
 # Variables
-#
+####################
 variable "region" {
   default = "us-west-1"
   
 }
 
+variable "az1a" {
+  default = "us-west-1a"
+}
+
+
 variable "shared-cred-file" {
   default = "/home/wdli/.aws/credentials"
 }
 
-#
+#####################
 # Provider
-#
+#####################
 provider "aws" {
   profile = "default"
   region  = var.region
   shared_credentials_file = var.shared-cred-file
 }
 
-#
+#################################
 # Resource: <provider>_<type>
-#
+################################
 # EC2
 #
 
@@ -59,7 +64,7 @@ resource "aws_instance" "my-tf-ec2-test" {
   hibernation = "true"
   
   tags = {
-    Name = "my-t2med-test"
+    Name = "my-tf-test"
   }
 }
 
@@ -70,15 +75,12 @@ resource "aws_instance" "my-tf-ec2-test" {
 # aws_ebs_volume
 #
 
-
-
 resource "aws_ebs_volume" "data-vol" {
   
- availability_zone = "us-west-1a"
+ availability_zone = var.az1a
  size = 20
-  
  tags = {
-        Name = "my-t2med-test-volume"
+        Name = "my-tf-test-volume"
  }
 
 }
@@ -89,10 +91,9 @@ resource "aws_ebs_volume" "data-vol" {
 # aws_volume_attachment
 #
 
-
 resource "aws_volume_attachment" "data-vol-attach" {
   
-  device_name = "/dev/sda"
+  device_name = "xvdh"
   volume_id = aws_ebs_volume.data-vol.id
   instance_id = aws_instance.my-tf-ec2-test.id
   
