@@ -1,0 +1,22 @@
+#
+# docker commands to bulid and test python images
+#
+# https://realpython.com/python-versions-docker/
+#
+
+
+# Build
+docker build -t david-python .
+
+# Clean
+docker system prune -a 
+
+# Run and test
+docker run -v $(pwd):/app --rm  -it david-python 
+docker run -v /home/wdli/workspace/github/programming/python:/app --rm -it  david-python python -m pdb /app/template-test.py
+
+# DTR
+docker login 
+docker tag david-python wdlidocker/david-python:0.1 
+docker push wdlidocker/david-python:0.1
+
