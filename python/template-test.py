@@ -2,9 +2,20 @@
 
 """A simple python script template.
 
-   To run pdb debugger in emacs
-   M-x pdb
-    python -m pdb template-test.py template-test.json
+   To use HTTP simple authentication:
+   
+     requests.get('https://api.github.com/user', auth=('user', 'pass'))
+
+   To run pdb debugger in emacs:
+
+    M-x pdb
+       python -m pdb template-test.py template-test.json
+
+   To test with david-python docker container:
+
+     docker run -v $(pwd):/app --rm -it  david-python python  /app/template-test.py "http://api.open-notify.org/astros.json"
+
+
 """
 
 import os
@@ -37,7 +48,7 @@ def main(arguments):
     print(response.json())
 
     print("==== Pretty ====")
-    json_obj = json.dumps(response.json(), indent=2)
+    json_obj = json.dumps(response.json(), sort_keys=True, indent=2)
     print(json_obj)
     
 

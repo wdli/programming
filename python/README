@@ -14,6 +14,8 @@ docker system prune -a
 # Run and test
 docker run -v $(pwd):/app --rm  -it david-python 
 docker run -v /home/wdli/workspace/github/programming/python:/app --rm -it  david-python python -m pdb /app/template-test.py
+docker run -v $(pwd):/app --rm -it  david-python python  /app/template-test.py "http://api.open-notify.org/astros.json"
+
 
 # DTR
 docker login 
