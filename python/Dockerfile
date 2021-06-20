@@ -13,6 +13,7 @@ RUN pip install -r requirements.txt
 RUN apt update
 RUN apt install vim -y
 RUN apt install emacs -y
+RUN apt install curl -y
 
 
 # copy the content of the local src directory to the working directory
