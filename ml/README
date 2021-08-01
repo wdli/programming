@@ -1,4 +1,0 @@
-sudo apt-get install python3-pip
-pip install --user --upgrade virtualenv
-virtualenv env
-git clone https://github.com/ageron/handson-ml.git

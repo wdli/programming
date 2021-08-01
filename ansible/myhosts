@@ -2,6 +2,4 @@
 
 ec2-54-201-8-249.us-west-2.compute.amazonaws.com  ansible_ssh_private_key_file=/home/wdli/workspace/aws/wdli-ec2-test1/wdli-ec2-test1.pem
 
-ec2-54-191-177-252.us-west-2.compute.amazonaws.com ansible_ssh_private_key_file=/home/wdli/workspace/aws/wdli-ec2-test2/wdli-ec2-test2.pem
-
-ec2-34-212-28-109.us-west-2.compute.amazonaws.com ansible_ssh_private_key_file=/home/wdli/workspace/aws/wdli-ec2-test3/wdli-ec2-test3.pem
+ec2-52-40-169-38.us-west-2.compute.amazonaws.com ansible_ssh_private_key_file=/home/wdli/workspace/aws/wdli-ec2-test1/wdli-ec2-test1.pem
