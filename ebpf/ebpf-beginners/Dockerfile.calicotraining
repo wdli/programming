@@ -1,0 +1,19 @@
+FROM ubuntu:20.04 as build
+ENV  DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update 
+RUN apt upgrade -y
+RUN apt-get -y install git vim
+
+WORKDIR /ebpf-app
+RUN git clone https://github.com/libbpf/libbpf.git && git clone https://github.com/libbpf/libbpf-bootstrap.git
+
+
+RUN apt install -y clang libelf-dev pkg-config llvm make gcc linux-tools-common linux-tools-generic
+RUN cd libbpf/src && make
+
+RUN cd libbpf-bootstrap/ && git submodule update --init --recursive
+RUN cd libbpf-bootstrap/examples/c && make minimal
+
+
+

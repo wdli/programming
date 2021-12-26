@@ -1,0 +1,18 @@
+FROM ubuntu:20.04 
+
+RUN apt update
+RUN apt install -y clang llvm libelf-dev libpcap-dev gcc-multilib build-essential make
+
+RUN apt install -y python3-pip
+RUN apt install -y build-essential libssl-dev libffi-dev python3-dev
+
+RUN pip3 install bcc
+RUN pip3 install numba
+
+RUN apt install -y vim
+
+WORKDIR /app
+
+
+
+
