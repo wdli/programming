@@ -27,3 +27,5 @@ docker run -v $(pwd):/app --rm  -it david-go-1.18
 docker login 
 docker tag david-go-1.18 wdlidocker/david-go:1.18 
 docker push wdlidocker/david-go:1.18
+
+# Github test
