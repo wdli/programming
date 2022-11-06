@@ -5,6 +5,7 @@ import (
 	"math"
 )
 
+// Variable
 var hello string = "Hello Learning!"
 
 // Struct and method
