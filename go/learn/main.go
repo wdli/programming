@@ -8,7 +8,7 @@ import (
 // Variable comment
 var hello string = "Hello Learning!"
 
-// Struct and method
+// Struct
 type Point struct {
 	X float64
 	Y float64
@@ -23,11 +23,33 @@ func (p Point) Distance(q Point) float64 {
 	return math.Hypot(q.X-p.X, q.Y-p.Y)
 }
 
-//interface and method
-
+// interface Shape
 type Shape interface {
 	area()
 }
+
+// struct Circle
+type Circle struct {
+	radius float64
+}
+
+// struct Rect
+type Rect struct {
+	width float64
+	lenth float64
+}
+
+// func method area for struct Circle
+func (c Circle) area() float64 {
+	return 3.14 * c.radius * c.radius
+}
+
+// func method area for struct Rect
+func (r Rect) area() float64 {
+	return r.lenth * r.width
+}
+
+// function
 
 func main() {
 
