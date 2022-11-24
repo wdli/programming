@@ -8,13 +8,13 @@ import (
 // Variable comment
 var hello string = "Hello Learning!"
 
-// Struct
+// A standalone struct
 type Point struct {
 	X float64
 	Y float64
 }
 
-// The following function attached to the struct Point
+// The following function attached to the standalone struct Point
 // (p Point) is the receiver
 // Distance is the name
 // (q Point) is the param
@@ -23,9 +23,11 @@ func (p Point) Distance(q Point) float64 {
 	return math.Hypot(q.X-p.X, q.Y-p.Y)
 }
 
+// Learn about interfaces
+//
 // interface Shape
 type Shape interface {
-	area()
+	area() float64
 }
 
 // struct Circle
@@ -39,14 +41,22 @@ type Rect struct {
 	lenth float64
 }
 
-// func method area for struct Circle
+// interface area implementation for struct Circle
 func (c Circle) area() float64 {
-	return 3.14 * c.radius * c.radius
+	return math.Pi * c.radius * c.radius
 }
 
-// func method area for struct Rect
+// interface area implementation for struct Rect
 func (r Rect) area() float64 {
 	return r.lenth * r.width
+}
+
+// function to print the area regardless
+// who implements the interface
+func printArea(s Shape) {
+
+	fmt.Println("Shape: ", s)
+	fmt.Println("Area is: ", s.area())
 }
 
 // function
@@ -54,11 +64,24 @@ func (r Rect) area() float64 {
 func main() {
 
 	fmt.Println(hello)
-	fmt.Println("# Testing the struct and method function")
+
+	//Test standalone struct and method
+	fmt.Println("### Testing the standalone struct and method function")
 
 	p := Point{1, 2} //near point
 	q := Point{3, 4} //remote point
 
 	fmt.Println(" The distance: ", p.Distance(q))
 
+	//Test the interface and its implementations
+	fmt.Println("### Testing the interface implementation")
+
+	c := Circle{radius: 10.0}
+	r := Rect{width: 3, lenth: 5}
+
+	fmt.Println(" Area of the circle ")
+	printArea(c)
+
+	fmt.Println(" Area of the rectangle")
+	printArea(r)
 }
