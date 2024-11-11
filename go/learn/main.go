@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"math"
 )
 
@@ -64,6 +65,7 @@ func printArea(s Shape) {
 func main() {
 
 	fmt.Println(hello)
+	log.Println(hello)
 
 	//Test standalone struct and method
 	fmt.Println("### Testing the standalone struct and method function")

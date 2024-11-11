@@ -8,6 +8,10 @@ if not api_key:
 
 # Initialize OpenAI client
 client = OpenAI(api_key=api_key)
+
+
+
+
 """
 This module provides functionality to interact with OpenAI's API.
 
@@ -25,7 +29,9 @@ Environment Variables:
 """
 
 
-def get_openai_response(prompt):
+
+
+def get_openai_response(prompt, system_prompt):
     """
     Send a prompt to OpenAI and get the response
     """
@@ -33,6 +39,7 @@ def get_openai_response(prompt):
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
+                {"role": "system", "content": system_prompt},
                 {"role": "user", "content": prompt}
             ]
         )
@@ -40,11 +47,13 @@ def get_openai_response(prompt):
     except Exception as e:
         print(f"Error occurred: {e}")
         return None
-
+    
+    
 if __name__ == "__main__":
-    # Get user input for prompt
+    # Get user input for system prompt and user prompt
+    system_prompt = input("Enter system prompt: ")
     prompt = input("Enter your prompt: ")
-    response = get_openai_response(prompt)
+    response = get_openai_response(prompt, system_prompt)
     if response:
         print(f"Prompt: {prompt}")
         print(f"Response: {response}")
