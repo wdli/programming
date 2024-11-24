@@ -54,6 +54,12 @@ if __name__ == "__main__":
     system_prompt = input("Enter system prompt: ")
     prompt = input("Enter your prompt: ")
     response = get_openai_response(prompt, system_prompt)
-    if response:
-        print(f"Prompt: {prompt}")
-        print(f"Response: {response}")
+    while True:
+        if response:
+            print("--------------------------------")
+            print(f"Prompt: {prompt}")
+            print(f"Response: {response}")
+        prompt = input("Enter your prompt (or 'exit' to quit): ")
+        if prompt.lower() == 'exit':
+            break
+        response = get_openai_response(prompt, system_prompt)
