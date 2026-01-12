@@ -7,6 +7,89 @@ let timerState = {
     isPaused: false
 };
 
+// Audio context for sound effects
+let audioContext = null;
+
+function getAudioContext() {
+    if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    // Resume if suspended (required by browser autoplay policy)
+    if (audioContext.state === 'suspended') {
+        audioContext.resume();
+    }
+    return audioContext;
+}
+
+// Play a tone with given frequency, duration, and type
+function playTone(frequency, duration, type = 'sine', volume = 0.3) {
+    const ctx = getAudioContext();
+
+    // Ensure context is running before playing
+    if (ctx.state !== 'running') {
+        ctx.resume().then(() => {
+            playToneInternal(ctx, frequency, duration, type, volume);
+        });
+    } else {
+        playToneInternal(ctx, frequency, duration, type, volume);
+    }
+}
+
+function playToneInternal(ctx, frequency, duration, type, volume) {
+    const oscillator = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(ctx.destination);
+
+    oscillator.frequency.value = frequency;
+    oscillator.type = type;
+    gainNode.gain.value = volume;
+
+    // Fade out to avoid clicks
+    gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
+
+    oscillator.start(ctx.currentTime);
+    oscillator.stop(ctx.currentTime + duration);
+}
+
+// Start sound - Rising hopeful tone (ascending notes)
+function playStartSound() {
+    const ctx = getAudioContext();
+    ctx.resume();
+    // Ascending cheerful notes: C5 -> E5 -> G5
+    setTimeout(() => playTone(523, 0.15, 'sine', 0.5), 0);    // C5
+    setTimeout(() => playTone(659, 0.15, 'sine', 0.5), 120);  // E5
+    setTimeout(() => playTone(784, 0.25, 'sine', 0.6), 240);  // G5
+}
+
+// Resume sound - Quick double beep (ready to continue)
+function playResumeSound() {
+    const ctx = getAudioContext();
+    ctx.resume();
+    setTimeout(() => playTone(587, 0.12, 'sine', 0.5), 0);    // D5
+    setTimeout(() => playTone(784, 0.18, 'sine', 0.6), 120);  // G5
+}
+
+// Complete sound - Celebratory fanfare
+function playCompleteSound() {
+    const ctx = getAudioContext();
+    ctx.resume();
+    // Victory fanfare: G4 -> C5 -> E5 -> G5 (held)
+    setTimeout(() => playTone(392, 0.2, 'sine', 0.5), 0);     // G4
+    setTimeout(() => playTone(523, 0.2, 'sine', 0.5), 150);   // C5
+    setTimeout(() => playTone(659, 0.2, 'sine', 0.5), 300);   // E5
+    setTimeout(() => playTone(784, 0.5, 'sine', 0.7), 450);   // G5 (longer)
+}
+
+// Cancel sound - Gentle descending tone
+function playCancelSound() {
+    const ctx = getAudioContext();
+    ctx.resume();
+    setTimeout(() => playTone(440, 0.15, 'sine', 0.4), 0);   // A4
+    setTimeout(() => playTone(330, 0.2, 'sine', 0.3), 100);  // E4
+}
+
 // DOM Elements
 const inputSection = document.getElementById('input-section');
 const timerSection = document.getElementById('timer-section');
@@ -61,6 +144,9 @@ function startTimer(minutes) {
     timerState.isRunning = true;
     timerState.isPaused = false;
 
+    // Play start sound
+    playStartSound();
+
     // Update UI
     showSection('timer');
     updateDisplay();
@@ -110,6 +196,9 @@ function resumeTimer() {
     timerState.isPaused = false;
     timerState.isRunning = true;
 
+    // Play resume sound
+    playResumeSound();
+
     updateStatus('Running', 'running');
     updatePauseButton();
 
@@ -118,6 +207,9 @@ function resumeTimer() {
 
 // Cancel and reset
 function handleCancel() {
+    // Play cancel sound
+    playCancelSound();
+
     clearTimer();
     showSection('input');
     minutesInput.value = '';
@@ -126,6 +218,9 @@ function handleCancel() {
 
 // Timer completed
 function timerComplete() {
+    // Play celebratory complete sound
+    playCompleteSound();
+
     clearTimer();
     showSection('complete');
 }
