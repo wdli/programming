@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timer App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Timer</h1>
+
+        <!-- Input Section -->
+        <div id="input-section" class="section">
+            <label for="minutes-input">Enter time in minutes:</label>
+            <input type="number" id="minutes-input" min="0.1" max="999" step="0.1">
+            <button id="start-btn" class="btn btn-start">Start</button>
+            <p id="error-message" class="error"></p>
+        </div>
+
+        <!-- Timer Display Section -->
+        <div id="timer-section" class="section hidden">
+            <div id="timer-display" class="timer-display">00:00</div>
+            <div id="status-indicator" class="status"></div>
+            <div class="controls">
+                <button id="pause-btn" class="btn btn-pause">Pause</button>
+                <button id="cancel-btn" class="btn btn-cancel">Cancel</button>
+            </div>
+        </div>
+
+        <!-- Completion Section -->
+        <div id="complete-section" class="section hidden">
+            <div class="complete-message">Time's Up!</div>
+            <button id="restart-btn" class="btn btn-start">Start New Timer</button>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='timer.js') }}"></script>
+</body>
+</html>
