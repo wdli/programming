@@ -11,21 +11,48 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 20px;
 }
 
-.container {
+.dual-container {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.timer-container {
     background: white;
-    padding: 40px;
+    padding: 30px;
     border-radius: 20px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     text-align: center;
-    min-width: 350px;
+    min-width: 320px;
+    max-width: 400px;
 }
 
-h1 {
+.timer-name-input {
+    width: 100%;
+    padding: 10px;
+    font-size: 1.5rem;
+    font-weight: bold;
     color: #333;
-    margin-bottom: 30px;
-    font-size: 2rem;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    text-align: center;
+    margin-bottom: 20px;
+    background: #f8f9fa;
+    transition: all 0.3s;
+}
+
+.timer-name-input:hover {
+    background: #e9ecef;
+}
+
+.timer-name-input:focus {
+    outline: none;
+    border-color: #667eea;
+    background: white;
 }
 
 .section {
@@ -40,13 +67,13 @@ label {
     display: block;
     margin-bottom: 10px;
     color: #555;
-    font-size: 1.1rem;
+    font-size: 1rem;
 }
 
 input[type="number"] {
     width: 100%;
-    padding: 15px;
-    font-size: 1.5rem;
+    padding: 12px;
+    font-size: 1.3rem;
     border: 2px solid #ddd;
     border-radius: 10px;
     text-align: center;
@@ -65,8 +92,8 @@ input[type="number"]:disabled {
 }
 
 .btn {
-    padding: 15px 40px;
-    font-size: 1.2rem;
+    padding: 12px 30px;
+    font-size: 1.1rem;
     border: none;
     border-radius: 10px;
     cursor: pointer;
@@ -116,18 +143,18 @@ input[type="number"]:disabled {
 }
 
 .timer-display {
-    font-size: 5rem;
+    font-size: 4rem;
     font-weight: bold;
     color: #333;
     font-family: 'Courier New', monospace;
-    margin: 30px 0;
-    letter-spacing: 5px;
+    margin: 25px 0;
+    letter-spacing: 3px;
 }
 
 .status {
     font-size: 1rem;
     color: #888;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     min-height: 24px;
 }
 
@@ -152,9 +179,9 @@ input[type="number"]:disabled {
 }
 
 .complete-message {
-    font-size: 3rem;
+    font-size: 2.5rem;
     color: #27ae60;
-    margin: 30px 0;
+    margin: 25px 0;
     animation: pulse 1s infinite;
 }
 
@@ -167,18 +194,21 @@ input[type="number"]:disabled {
     }
 }
 
-@media (max-width: 400px) {
-    .container {
+@media (max-width: 700px) {
+    .dual-container {
+        flex-direction: column;
+    }
+
+    .timer-container {
         min-width: 300px;
-        padding: 25px;
     }
 
     .timer-display {
-        font-size: 3.5rem;
+        font-size: 3rem;
     }
 
     .btn {
-        padding: 12px 25px;
+        padding: 10px 20px;
         font-size: 1rem;
     }
 }

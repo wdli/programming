@@ -1,10 +1,19 @@
-// Timer state
-let timerState = {
-    totalSeconds: 0,
-    remainingSeconds: 0,
-    intervalId: null,
-    isRunning: false,
-    isPaused: false
+// Timer states for both timers
+const timers = {
+    1: {
+        totalSeconds: 0,
+        remainingSeconds: 0,
+        intervalId: null,
+        isRunning: false,
+        isPaused: false
+    },
+    2: {
+        totalSeconds: 0,
+        remainingSeconds: 0,
+        intervalId: null,
+        isRunning: false,
+        isPaused: false
+    }
 };
 
 // Audio context for sound effects
@@ -90,211 +99,252 @@ function playCancelSound() {
     setTimeout(() => playTone(330, 0.2, 'sine', 0.3), 100);  // E4
 }
 
-// DOM Elements
-const inputSection = document.getElementById('input-section');
-const timerSection = document.getElementById('timer-section');
-const completeSection = document.getElementById('complete-section');
-const minutesInput = document.getElementById('minutes-input');
-const startBtn = document.getElementById('start-btn');
-const pauseBtn = document.getElementById('pause-btn');
-const cancelBtn = document.getElementById('cancel-btn');
-const restartBtn = document.getElementById('restart-btn');
-const timerDisplay = document.getElementById('timer-display');
-const statusIndicator = document.getElementById('status-indicator');
-const errorMessage = document.getElementById('error-message');
+// DOM Elements helper
+function getElements(timerId) {
+    return {
+        nameInput: document.getElementById(`timer${timerId}-name`),
+        inputSection: document.getElementById(`timer${timerId}-input-section`),
+        displaySection: document.getElementById(`timer${timerId}-display-section`),
+        completeSection: document.getElementById(`timer${timerId}-complete-section`),
+        minutesInput: document.getElementById(`timer${timerId}-minutes`),
+        startBtn: document.getElementById(`timer${timerId}-start-btn`),
+        pauseBtn: document.getElementById(`timer${timerId}-pause-btn`),
+        cancelBtn: document.getElementById(`timer${timerId}-cancel-btn`),
+        restartBtn: document.getElementById(`timer${timerId}-restart-btn`),
+        timerDisplay: document.getElementById(`timer${timerId}-display`),
+        statusIndicator: document.getElementById(`timer${timerId}-status`),
+        errorMessage: document.getElementById(`timer${timerId}-error`)
+    };
+}
 
-// Event Listeners
-startBtn.addEventListener('click', handleStart);
-pauseBtn.addEventListener('click', handlePauseResume);
-cancelBtn.addEventListener('click', handleCancel);
-restartBtn.addEventListener('click', handleRestart);
-minutesInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') handleStart();
-});
+// Initialize event listeners for both timers
+function initTimer(timerId) {
+    const els = getElements(timerId);
+
+    els.startBtn.addEventListener('click', () => handleStart(timerId));
+    els.pauseBtn.addEventListener('click', () => handlePauseResume(timerId));
+    els.cancelBtn.addEventListener('click', () => handleCancel(timerId));
+    els.restartBtn.addEventListener('click', () => handleRestart(timerId));
+    els.minutesInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') handleStart(timerId);
+    });
+}
+
+// Initialize both timers
+initTimer(1);
+initTimer(2);
 
 // Validate and start timer
-function handleStart() {
-    const minutes = parseFloat(minutesInput.value);
+function handleStart(timerId) {
+    const els = getElements(timerId);
+    const minutes = parseFloat(els.minutesInput.value);
 
     // Validation
-    if (isNaN(minutes) || minutesInput.value.trim() === '') {
-        showError('Please enter a valid number');
+    if (isNaN(minutes) || els.minutesInput.value.trim() === '') {
+        showError(timerId, 'Please enter a valid number');
         return;
     }
 
     if (minutes <= 0) {
-        showError('Please enter a positive number');
+        showError(timerId, 'Please enter a positive number');
         return;
     }
 
     if (minutes > 999) {
-        showError('Maximum time is 999 minutes');
+        showError(timerId, 'Maximum time is 999 minutes');
         return;
     }
 
-    clearError();
-    startTimer(minutes);
+    clearError(timerId);
+    startTimer(timerId, minutes);
 }
 
 // Start the countdown
-function startTimer(minutes) {
+function startTimer(timerId, minutes) {
+    const timer = timers[timerId];
+
     // Convert minutes to seconds (handle decimals)
-    timerState.totalSeconds = Math.round(minutes * 60);
-    timerState.remainingSeconds = timerState.totalSeconds;
-    timerState.isRunning = true;
-    timerState.isPaused = false;
+    timer.totalSeconds = Math.round(minutes * 60);
+    timer.remainingSeconds = timer.totalSeconds;
+    timer.isRunning = true;
+    timer.isPaused = false;
 
     // Play start sound
     playStartSound();
 
     // Update UI
-    showSection('timer');
-    updateDisplay();
-    updateStatus('Running', 'running');
-    updatePauseButton();
+    showSection(timerId, 'timer');
+    updateDisplay(timerId);
+    updateStatus(timerId, 'Running', 'running');
+    updatePauseButton(timerId);
 
     // Start countdown
-    timerState.intervalId = setInterval(tick, 1000);
+    timer.intervalId = setInterval(() => tick(timerId), 1000);
 }
 
 // Timer tick - called every second
-function tick() {
-    if (timerState.remainingSeconds > 0) {
-        timerState.remainingSeconds--;
-        updateDisplay();
+function tick(timerId) {
+    const timer = timers[timerId];
+
+    if (timer.remainingSeconds > 0) {
+        timer.remainingSeconds--;
+        updateDisplay(timerId);
     }
 
-    if (timerState.remainingSeconds <= 0) {
-        timerComplete();
+    if (timer.remainingSeconds <= 0) {
+        timerComplete(timerId);
     }
 }
 
 // Handle pause/resume toggle
-function handlePauseResume() {
-    if (timerState.isPaused) {
-        resumeTimer();
+function handlePauseResume(timerId) {
+    const timer = timers[timerId];
+
+    if (timer.isPaused) {
+        resumeTimer(timerId);
     } else {
-        pauseTimer();
+        pauseTimer(timerId);
     }
 }
 
 // Pause the timer
-function pauseTimer() {
-    if (timerState.intervalId) {
-        clearInterval(timerState.intervalId);
-        timerState.intervalId = null;
-    }
-    timerState.isPaused = true;
-    timerState.isRunning = false;
+function pauseTimer(timerId) {
+    const timer = timers[timerId];
 
-    updateStatus('Paused', 'paused');
-    updatePauseButton();
+    if (timer.intervalId) {
+        clearInterval(timer.intervalId);
+        timer.intervalId = null;
+    }
+    timer.isPaused = true;
+    timer.isRunning = false;
+
+    updateStatus(timerId, 'Paused', 'paused');
+    updatePauseButton(timerId);
 }
 
 // Resume the timer
-function resumeTimer() {
-    timerState.isPaused = false;
-    timerState.isRunning = true;
+function resumeTimer(timerId) {
+    const timer = timers[timerId];
+
+    timer.isPaused = false;
+    timer.isRunning = true;
 
     // Play resume sound
     playResumeSound();
 
-    updateStatus('Running', 'running');
-    updatePauseButton();
+    updateStatus(timerId, 'Running', 'running');
+    updatePauseButton(timerId);
 
-    timerState.intervalId = setInterval(tick, 1000);
+    timer.intervalId = setInterval(() => tick(timerId), 1000);
 }
 
 // Cancel and reset
-function handleCancel() {
+function handleCancel(timerId) {
     // Play cancel sound
     playCancelSound();
 
-    clearTimer();
-    showSection('input');
-    minutesInput.value = '';
-    minutesInput.focus();
+    clearTimer(timerId);
+    showSection(timerId, 'input');
+
+    const els = getElements(timerId);
+    els.minutesInput.value = '';
+    els.minutesInput.focus();
 }
 
 // Timer completed
-function timerComplete() {
+function timerComplete(timerId) {
     // Play celebratory complete sound
     playCompleteSound();
 
-    clearTimer();
-    showSection('complete');
+    clearTimer(timerId);
+    showSection(timerId, 'complete');
 }
 
 // Clear timer interval and reset state
-function clearTimer() {
-    if (timerState.intervalId) {
-        clearInterval(timerState.intervalId);
-        timerState.intervalId = null;
+function clearTimer(timerId) {
+    const timer = timers[timerId];
+
+    if (timer.intervalId) {
+        clearInterval(timer.intervalId);
+        timer.intervalId = null;
     }
-    timerState.isRunning = false;
-    timerState.isPaused = false;
-    timerState.remainingSeconds = 0;
+    timer.isRunning = false;
+    timer.isPaused = false;
+    timer.remainingSeconds = 0;
 }
 
 // Restart from completion screen
-function handleRestart() {
-    showSection('input');
-    minutesInput.value = '';
-    minutesInput.focus();
+function handleRestart(timerId) {
+    showSection(timerId, 'input');
+
+    const els = getElements(timerId);
+    els.minutesInput.value = '';
+    els.minutesInput.focus();
 }
 
 // Update the timer display (MM:SS format)
-function updateDisplay() {
-    const minutes = Math.floor(timerState.remainingSeconds / 60);
-    const seconds = timerState.remainingSeconds % 60;
+function updateDisplay(timerId) {
+    const timer = timers[timerId];
+    const els = getElements(timerId);
+
+    const minutes = Math.floor(timer.remainingSeconds / 60);
+    const seconds = timer.remainingSeconds % 60;
 
     const displayMinutes = String(minutes).padStart(2, '0');
     const displaySeconds = String(seconds).padStart(2, '0');
 
-    timerDisplay.textContent = `${displayMinutes}:${displaySeconds}`;
+    els.timerDisplay.textContent = `${displayMinutes}:${displaySeconds}`;
 }
 
 // Update pause button text and style
-function updatePauseButton() {
-    if (timerState.isPaused) {
-        pauseBtn.textContent = 'Resume';
-        pauseBtn.classList.add('resume');
+function updatePauseButton(timerId) {
+    const timer = timers[timerId];
+    const els = getElements(timerId);
+
+    if (timer.isPaused) {
+        els.pauseBtn.textContent = 'Resume';
+        els.pauseBtn.classList.add('resume');
     } else {
-        pauseBtn.textContent = 'Pause';
-        pauseBtn.classList.remove('resume');
+        els.pauseBtn.textContent = 'Pause';
+        els.pauseBtn.classList.remove('resume');
     }
 }
 
 // Update status indicator
-function updateStatus(text, className) {
-    statusIndicator.textContent = text;
-    statusIndicator.className = 'status ' + className;
+function updateStatus(timerId, text, className) {
+    const els = getElements(timerId);
+    els.statusIndicator.textContent = text;
+    els.statusIndicator.className = 'status ' + className;
 }
 
 // Show/hide sections
-function showSection(section) {
-    inputSection.classList.add('hidden');
-    timerSection.classList.add('hidden');
-    completeSection.classList.add('hidden');
+function showSection(timerId, section) {
+    const els = getElements(timerId);
+
+    els.inputSection.classList.add('hidden');
+    els.displaySection.classList.add('hidden');
+    els.completeSection.classList.add('hidden');
 
     switch(section) {
         case 'input':
-            inputSection.classList.remove('hidden');
+            els.inputSection.classList.remove('hidden');
             break;
         case 'timer':
-            timerSection.classList.remove('hidden');
+            els.displaySection.classList.remove('hidden');
             break;
         case 'complete':
-            completeSection.classList.remove('hidden');
+            els.completeSection.classList.remove('hidden');
             break;
     }
 }
 
 // Error handling
-function showError(message) {
-    errorMessage.textContent = message;
+function showError(timerId, message) {
+    const els = getElements(timerId);
+    els.errorMessage.textContent = message;
 }
 
-function clearError() {
-    errorMessage.textContent = '';
+function clearError(timerId) {
+    const els = getElements(timerId);
+    els.errorMessage.textContent = '';
 }
