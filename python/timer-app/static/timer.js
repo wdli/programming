@@ -134,6 +134,16 @@ function initTimer(timerId) {
 initTimer(1);
 initTimer(2);
 
+// Cleanup on page navigation to prevent memory leaks
+function cleanupAllTimers() {
+    clearTimer(1);
+    clearTimer(2);
+}
+
+// Listen for page unload events to cleanup timers
+window.addEventListener('beforeunload', cleanupAllTimers);
+window.addEventListener('pagehide', cleanupAllTimers);
+
 // Validate and start timer
 function handleStart(timerId) {
     const els = getElements(timerId);

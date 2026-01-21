@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Leak Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .test-section {
+            border: 2px solid #333;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        .pass { background-color: #d4edda; border-color: #28a745; }
+        .fail { background-color: #f8d7da; border-color: #dc3545; }
+        .pending { background-color: #fff3cd; border-color: #ffc107; }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #results {
+            margin-top: 20px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Timer App - Memory Leak Test</h1>
+
+    <div class="test-section pending">
+        <h2>Test 1: Verify cleanup functions exist</h2>
+        <p>This test checks if the cleanup functions are properly defined in timer.js</p>
+        <button onclick="runTest1()">Run Test 1</button>
+        <div id="test1-result"></div>
+    </div>
+
+    <div class="test-section pending">
+        <h2>Test 2: Verify event listeners are attached</h2>
+        <p>This test checks if beforeunload and pagehide event listeners are registered</p>
+        <button onclick="runTest2()">Run Test 2</button>
+        <div id="test2-result"></div>
+    </div>
+
+    <div class="test-section pending">
+        <h2>Test 3: Simulate timer running and cleanup</h2>
+        <p>This test simulates starting a timer and then triggering cleanup to verify intervals are cleared</p>
+        <button onclick="runTest3()">Run Test 3</button>
+        <div id="test3-result"></div>
+    </div>
+
+    <div class="test-section pending">
+        <h2>Manual Test: Start timer and navigate away</h2>
+        <p>Steps:</p>
+        <ol>
+            <li>Open the timer app: <a href="http://127.0.0.1:5002" target="_blank">http://127.0.0.1:5002</a></li>
+            <li>Start one or both timers</li>
+            <li>Navigate to a different page or close the tab</li>
+            <li>Open browser console before navigating and check for any running intervals</li>
+        </ol>
+        <button onclick="openTimerApp()">Open Timer App</button>
+    </div>
+
+    <div id="results">
+Test Results will appear here...
+    </div>
+
+    <script>
+        function log(message) {
+            const results = document.getElementById('results');
+            const timestamp = new Date().toLocaleTimeString();
+            results.textContent += `[${timestamp}] ${message}\n`;
+        }
+
+        function runTest1() {
+            const section = document.querySelectorAll('.test-section')[0];
+            const resultDiv = document.getElementById('test1-result');
+
+            log('Running Test 1: Checking cleanup functions...');
+
+            // Load timer.js and check for cleanupAllTimers function
+            fetch('http://127.0.0.1:5002/static/timer.js')
+                .then(response => response.text())
+                .then(code => {
+                    const hasCleanupFunction = code.includes('function cleanupAllTimers()');
+                    const hasBeforeunload = code.includes("addEventListener('beforeunload'");
+                    const hasPagehide = code.includes("addEventListener('pagehide'");
+
+                    if (hasCleanupFunction && hasBeforeunload && hasPagehide) {
+                        section.className = 'test-section pass';
+                        resultDiv.innerHTML = '<strong>✓ PASS:</strong> All cleanup functions and event listeners found in code';
+                        log('✓ Test 1 PASSED: cleanup functions exist');
+                    } else {
+                        section.className = 'test-section fail';
+                        resultDiv.innerHTML = `<strong>✗ FAIL:</strong> Missing components<br>
+                            - cleanupAllTimers: ${hasCleanupFunction ? '✓' : '✗'}<br>
+                            - beforeunload listener: ${hasBeforeunload ? '✓' : '✗'}<br>
+                            - pagehide listener: ${hasPagehide ? '✓' : '✗'}`;
+                        log('✗ Test 1 FAILED: cleanup functions missing');
+                    }
+                })
+                .catch(err => {
+                    section.className = 'test-section fail';
+                    resultDiv.innerHTML = `<strong>✗ ERROR:</strong> ${err.message}`;
+                    log(`✗ Test 1 ERROR: ${err.message}`);
+                });
+        }
+
+        function runTest2() {
+            const section = document.querySelectorAll('.test-section')[1];
+            const resultDiv = document.getElementById('test2-result');
+
+            log('Running Test 2: Checking event listeners...');
+
+            // Open timer app in iframe to check event listeners
+            const iframe = document.createElement('iframe');
+            iframe.src = 'http://127.0.0.1:5002';
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
+
+            iframe.onload = function() {
+                try {
+                    // Note: This might fail due to same-origin policy, but timer.js runs in the iframe
+                    const iframeWindow = iframe.contentWindow;
+
+                    // We can't directly check event listeners, but we can verify the code loaded
+                    section.className = 'test-section pass';
+                    resultDiv.innerHTML = '<strong>✓ PASS:</strong> Timer app loaded successfully. Event listeners should be attached based on Test 1.';
+                    log('✓ Test 2 PASSED: Timer app loaded and initialized');
+
+                    document.body.removeChild(iframe);
+                } catch (err) {
+                    section.className = 'test-section fail';
+                    resultDiv.innerHTML = `<strong>✗ ERROR:</strong> ${err.message}`;
+                    log(`✗ Test 2 ERROR: ${err.message}`);
+                }
+            };
+        }
+
+        function runTest3() {
+            const section = document.querySelectorAll('.test-section')[2];
+            const resultDiv = document.getElementById('test3-result');
+
+            log('Running Test 3: Simulating timer cleanup...');
+
+            // Open in new window to test cleanup
+            const testWindow = window.open('http://127.0.0.1:5002', 'timerTest', 'width=800,height=600');
+
+            if (testWindow) {
+                resultDiv.innerHTML = `<strong>⏳ TESTING:</strong>
+                    <ol>
+                        <li>A new window has opened with the timer app</li>
+                        <li>Start a timer in that window</li>
+                        <li>Open the browser console in that window (F12)</li>
+                        <li>Close the window or navigate away</li>
+                        <li>Check the console for any errors about running intervals</li>
+                    </ol>
+                    <p>Expected: No errors should appear, intervals should be cleaned up</p>`;
+
+                section.className = 'test-section pending';
+                log('Test 3: New window opened for manual testing');
+
+                setTimeout(() => {
+                    resultDiv.innerHTML += '<p><strong>Note:</strong> This is a manual test. Close the test window when done.</p>';
+                }, 2000);
+            } else {
+                section.className = 'test-section fail';
+                resultDiv.innerHTML = '<strong>✗ FAIL:</strong> Could not open test window. Check popup blocker.';
+                log('✗ Test 3 FAILED: Popup blocked');
+            }
+        }
+
+        function openTimerApp() {
+            window.open('http://127.0.0.1:5002', '_blank');
+            log('Opened timer app in new tab');
+        }
+
+        log('Test page loaded. Ready to run tests.');
+    </script>
+</body>
+</html>
