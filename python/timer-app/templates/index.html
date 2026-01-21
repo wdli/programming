@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dual Timer App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="dual-container">
+        <!-- Timer 1 -->
+        <div class="timer-container" id="timer1-container">
+            <input type="text" class="timer-name-input" id="timer1-name" value="Timer 1" maxlength="20">
+
+            <!-- Input Section -->
+            <div id="timer1-input-section" class="section">
+                <label for="timer1-minutes">Enter time in minutes:</label>
+                <input type="number" id="timer1-minutes" min="0.1" max="999" step="0.1">
+                <button id="timer1-start-btn" class="btn btn-start" data-timer="1">Start</button>
+                <p id="timer1-error" class="error"></p>
+            </div>
+
+            <!-- Timer Display Section -->
+            <div id="timer1-display-section" class="section hidden">
+                <div id="timer1-display" class="timer-display">00:00</div>
+                <div id="timer1-status" class="status"></div>
+                <div class="controls">
+                    <button id="timer1-pause-btn" class="btn btn-pause" data-timer="1">Pause</button>
+                    <button id="timer1-cancel-btn" class="btn btn-cancel" data-timer="1">Cancel</button>
+                </div>
+            </div>
+
+            <!-- Completion Section -->
+            <div id="timer1-complete-section" class="section hidden">
+                <div class="complete-message">Time's Up!</div>
+                <button id="timer1-restart-btn" class="btn btn-start" data-timer="1">Start New Timer</button>
+            </div>
+        </div>
+
+        <!-- Timer 2 -->
+        <div class="timer-container" id="timer2-container">
+            <input type="text" class="timer-name-input" id="timer2-name" value="Timer 2" maxlength="20">
+
+            <!-- Input Section -->
+            <div id="timer2-input-section" class="section">
+                <label for="timer2-minutes">Enter time in minutes:</label>
+                <input type="number" id="timer2-minutes" min="0.1" max="999" step="0.1">
+                <button id="timer2-start-btn" class="btn btn-start" data-timer="2">Start</button>
+                <p id="timer2-error" class="error"></p>
+            </div>
+
+            <!-- Timer Display Section -->
+            <div id="timer2-display-section" class="section hidden">
+                <div id="timer2-display" class="timer-display">00:00</div>
+                <div id="timer2-status" class="status"></div>
+                <div class="controls">
+                    <button id="timer2-pause-btn" class="btn btn-pause" data-timer="2">Pause</button>
+                    <button id="timer2-cancel-btn" class="btn btn-cancel" data-timer="2">Cancel</button>
+                </div>
+            </div>
+
+            <!-- Completion Section -->
+            <div id="timer2-complete-section" class="section hidden">
+                <div class="complete-message">Time's Up!</div>
+                <button id="timer2-restart-btn" class="btn btn-start" data-timer="2">Start New Timer</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='timer.js') }}"></script>
+</body>
+</html>
